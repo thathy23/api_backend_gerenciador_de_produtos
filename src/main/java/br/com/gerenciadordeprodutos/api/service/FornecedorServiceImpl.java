@@ -2,6 +2,7 @@ package br.com.gerenciadordeprodutos.api.service;
 
 import br.com.gerenciadordeprodutos.api.dtos.CriarFornecedorRequest;
 import br.com.gerenciadordeprodutos.api.dtos.FornecedorCriadoResponse;
+import br.com.gerenciadordeprodutos.api.model.Endereco;
 import br.com.gerenciadordeprodutos.api.model.Fornecedor;
 import br.com.gerenciadordeprodutos.api.repository.FornecedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,21 @@ public class FornecedorServiceImpl implements FornecedorService {
 
     @Override
     public FornecedorCriadoResponse criarFornecedor(CriarFornecedorRequest criarFornecedorRequest) {
+        //criar objeto endereco na memoria ram
+        //ele nao roda sozinho, ele é um objto que vai abastecer o endereco do fornecedor
+        //em criar fornecedor dar um set endereco
+        Endereco endereco = new Endereco(
+                null,
+                criarFornecedorRequest.endereco().logradouro(),
+                criarFornecedorRequest.endereco().numero(),
+                criarFornecedorRequest.endereco().complemento(),
+                criarFornecedorRequest.endereco().bairro(),
+                criarFornecedorRequest.endereco().cidade(),
+                criarFornecedorRequest.endereco().estado(),
+                criarFornecedorRequest.endereco().pais(),
+                criarFornecedorRequest.endereco().cep()
+        );
+
         Fornecedor fornecedor = new Fornecedor();
         fornecedor.setNome(criarFornecedorRequest.nome());
         fornecedor.setCNPJ(criarFornecedorRequest.cnpj());
@@ -27,6 +43,7 @@ public class FornecedorServiceImpl implements FornecedorService {
         fornecedor.setTipoFornecedor(criarFornecedorRequest.tipoFornecedor());
         fornecedor.setCriadoEm(LocalDateTime.now());
         fornecedor.setAtualizadoEm(LocalDateTime.now());
+        fornecedor.setEndereco(endereco);
 
         Fornecedor fornecedorCriado = fornecedorRepository.save(fornecedor);
 

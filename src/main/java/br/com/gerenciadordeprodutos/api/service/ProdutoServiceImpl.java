@@ -45,21 +45,40 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Produto buscarProdutoPeloId(Long id) {
-        return null;
+        return produtoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Produto não encontrado"));
     }
 
     @Override
     public List<Produto> buscarTodosProdutos() {
-        return List.of();
+        return produtoRepository.findAll();
     }
 
     @Override
     public Produto atualizarProduto(Long id, CriarProdutoRequest criarProdutoRequest) {
-        return null;
+        Produto produtoExistenteParaSerAtualizado = produtoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Produto não encontrado"));
+
+        Fornecedor novoFornecedor = fornecedorRepository.findById(criarProdutoRequest.fornecedorId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Fornecedor não encontrado"));
+
+        produtoExistenteParaSerAtualizado.setNome(criarProdutoRequest.nome());
+        produtoExistenteParaSerAtualizado.setPreco(criarProdutoRequest.preco());
+        produtoExistenteParaSerAtualizado.setDescricao(criarProdutoRequest.descricao());
+        produtoExistenteParaSerAtualizado.setFornecedor(novoFornecedor);
+
+        return produtoRepository.save(produtoExistenteParaSerAtualizado);
     }
 
     @Override
     public void deletarProdutoPeloId(Long id) {
+          Produto produtoParaSerDeletado = produtoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Produto não encontrado"));
 
+          produtoRepository.delete(produtoParaSerDeletado);
     }
 }

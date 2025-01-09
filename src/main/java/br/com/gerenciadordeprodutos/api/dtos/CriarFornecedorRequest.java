@@ -20,7 +20,9 @@ public record CriarFornecedorRequest(
         String email,
 
         @NotNull(message = "O tipo de fornecedor nao pode ficar em branco")
-        TipoFornecedorEnum tipoFornecedor
+        TipoFornecedorEnum tipoFornecedor,
+
+        EnderecoDTO endereco
 ) {
 
 }
